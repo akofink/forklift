@@ -1,0 +1,20 @@
+- name: 'Add /etc/hosts record for FreeIPA'
+  lineinfile: dest=/etc/hosts regexp=".*{{ ansible_nodename }}$" line="{{ freeipa_capsule_ip }} {{ ansible_nodename }}" state=present
+
+- name: 'Install FreeIPA client and admintools'
+  yum: name=ipa-client,ipa-admintools state=latest
+
+- name: 'Register Foreman in FreeIPA'
+  shell: ipa-client-install --domain example.com --server {{ ansible_nodename }} --mkhomedir --fixed-primary --realm={{ freeipa_capsule_realm }} --force-join -p {{ freeipa_capsule_kerberos_principal }}@{{ freeipa_capsule_realm }} -w {{ freeipa_capsule_realm_password }} -U creates=/etc/krb5.keytab
+
+- name: 'Run foreman-prepare-realm'
+  shell: echo changeme | foreman-prepare-realm {{ freeipa_capsule_kerberos_principal }}@{{ freeipa_capsule_realm }} realm-proxy chdir=/root creates=/root/freeipa.keytab
+
+- name: 'Create HTTP principal'
+  shell: echo changeme | kinit {{ freeipa_capsule_kerberos_principal }}@{{ freeipa_capsule_realm }} && ipa service-add HTTP/{{ katello_fqdn.stdout }} --force
+
+- name: 'Copy keytab'
+  shell: cp /root/freeipa.keytab /etc/foreman-proxy/freeipa.keytab && chown foreman-proxy /etc/foreman-proxy/freeipa.keytab && chmod 0600 /etc/foreman-proxy/freeipa.keytab
+
+- name: 'Enable Realm with foreman-installer'
+  shell: foreman-installer --foreman-proxy-realm=true --foreman-ipa-authentication=true

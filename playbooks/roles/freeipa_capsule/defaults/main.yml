@@ -1,0 +1,16 @@
+---
+custom_install: False
+capsule_upgrade: False
+capsule_use_release_repos: True
+capsule_use_koji_repos: False
+capsule_foreman_version: nightly
+server_group: "server-{{ inventory_hostname }}"
+server: "{{ groups[server_group][0] }}"
+katello_server: "{{ groups[server_group][0] }}"
+freeipa_capsule_ip: "{{ ansible_eth0.ipv4.address }}"
+freeipa_capsule_realm: "EXAMPLE.COM"
+freeipa_capsule_domain: "example.com"
+freeipa_capsule_directory_manager_password: "changeme"
+freeipa_capsule_directory_admin_password: "changeme"
+freeipa_capsule_kerberos_principal: "admin"
+freeipa_capsule_realm_password: "changeme"

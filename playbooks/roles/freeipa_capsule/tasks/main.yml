@@ -1,0 +1,11 @@
+---
+- include: install_freeipa_server.yml
+
+- include: ../capsule/install.yml
+  when: capsule_upgrade == False
+
+- include: ../capsule/upgrade.yml
+  when: capsule_upgrade == True
+
+- include: install_freeipa_client.yml
+  delegate_to: "{{ katello_server }}"
