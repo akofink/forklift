@@ -1,0 +1,7 @@
+---
+- name: 'install the prebuilt bootstrap rpm'
+  become: true
+  yum: name=http://{{ katello_server }}/pub/katello-ca-consumer-latest.noarch.rpm state=present
+- name: 'install subscription-manager'
+  become: true
+  yum: name=subscription-manager state=present

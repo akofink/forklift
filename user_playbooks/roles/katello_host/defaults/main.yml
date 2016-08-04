@@ -1,0 +1,4 @@
+---
+server_group: "server-{{ inventory_hostname }}"
+katello_server: "{{ groups[server_group][0] }}"
+katello_server: "dev"
