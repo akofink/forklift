@@ -1,6 +1,7 @@
 ---
 dependencies:
   - role: etc_hosts
+  - role: ruby_scl
   - role: foreman_server_repositories
     foreman_server_repositories_ostree: true
     foreman_server_repositories_katello: true
@@ -13,5 +14,7 @@ dependencies:
       - foreman-installer-katello
     foreman_installer_options_internal_use_only:
       - "--disable-system-checks"
+      - --katello-devel-use-rvm=false
+      - --katello-devel-use-scl-ruby=true
       - "--katello-devel-enable-ostree=true"
       - "--katello-devel-admin-password {{ foreman_installer_admin_password }}"
